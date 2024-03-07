@@ -61,13 +61,12 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-//// LECTURES 
+//// LECTURES
 const currencies = new Map([
   ['USD', 'United States dollar'],
   ['EUR', 'Euro'],
   ['GBP', 'Pound sterling'],
 ]);
-
 
 const displayMovements = function (movements) {
   movements.forEach(function (mov, i) {
@@ -110,23 +109,22 @@ const createUsername = function (accounts) {
 createUsername(accounts);
 console.log(accounts);
 
-//////// CHALLENGE
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
 
-const dogsJulia = [3, 5, 2, 12, 7];
-const dogsKate = [4, 1, 15, 8, 3];
+  const out = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
 
-const checkDogs = function (dogsJulia, dogsKate) {
-  const dogsJuliaCorrected = dogsJulia.splice(1, 2);
-  const dogs = dogsJuliaCorrected.concat(dogsKate);
-  console.log(dogs);
-
-  dogs.forEach(function (dog, i) {
-    if (dog > 3) {
-      console.log(`Dog number ${i + 1} is an adult, and is ${dog} years old`);
-    } else {
-      console.log(`Dog number ${i + 1} is still a puppy`);
-    }
-  });
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter(int => int>=1)
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest}€`;
 };
-
-checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
+calcDisplaySummary(account1.movements);
