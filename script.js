@@ -89,7 +89,7 @@ const displayMovements = function (movements, sort = false) {
 
   const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
   movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    const type = mov > 0 ? 'deposit' : 'withdrawals';
 
     const html = `
       <div class="movements__row">
@@ -260,7 +260,43 @@ const overalBalance2 = accounts
   .reduce((acc, mov) => acc + mov, 0);
 // console.log(overalBalance2);
 
-
 //// SORT
-
 // console.log(movements.sort((a,b) => a-b));
+
+//// REDUCE ADVANCED USE
+
+// 1. only count the movements more than 1000
+const deposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, cur) => (cur >= 1000 ? count + 1 : count), 0);
+console.log(deposits1000);
+
+// 2.
+const { deposits, withdrawals } = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
+      // return sums;
+      sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+console.log(deposits, withdrawals);
+
+// 3.
+const convertTitleCase = function (title) {
+  const exception = ['a', 'an', 'the', 'is', 'but'];
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map(word => 
+      exception.includes(word)? word : word[0].toUpperCase() + word.slice(1)
+      )
+      .join(' ');
+  return titleCase;
+};
+
+console.log(convertTitleCase('This is a title'));
+console.log(convertTitleCase('This is a very big title but not too MUCH'));
